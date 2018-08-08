@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-apply plugin: 'konan'
 
-konan.targets = ['ios_arm64', 'ios_x64', 'macos']
-
+/*
 konanArtifacts {
     library('multiplatform-settings-ios') {
         enableMultiplatform true
@@ -34,9 +32,25 @@ konanArtifacts {
         extraOpts '-tr'
     }
 }
+*/
+
+apply plugin: 'kotlin-platform-native'
+
+sourceSets {
+    main {
+        component {
+            baseName.set("MultiplatformSettingsIos")
+            target /*'ios_arm32', */'ios_arm64', 'ios_x64', 'macos_x64'
+            outputKinds = [KLIBRARY]
+        }
+    }
+    /*test {
+        component {
+            target 'ios_x64'
+        }
+    }*/
+}
 
 dependencies {
     expectedBy project(':multiplatform-settings:common')
 }
-
-task test(dependsOn: run)
