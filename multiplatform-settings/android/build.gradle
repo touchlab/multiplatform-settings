@@ -18,27 +18,6 @@ apply plugin: 'com.android.library'
 
 apply plugin: 'kotlin-platform-android'
 
-task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from android.sourceSets.main.java.srcDirs
-}
-
-artifacts {
-    archives sourcesJar
-}
-
-publishing {
-    publications {
-        android(MavenPublication) {
-            artifact("$buildDir/outputs/aar/android-release.aar")
-            artifact sourcesJar
-            groupId
-            artifactId 'multiplatform-settings-android'
-            version this.version
-        }
-    }
-}
-
 android {
     compileSdkVersion 27
     defaultConfig {
@@ -52,7 +31,7 @@ android {
 }
 
 dependencies {
-    expectedBy project(':multiplatform-settings:common')
+    expectedBy project(':common')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testImplementation 'junit:junit:4.12'
@@ -64,3 +43,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
+
+apply from: '../../gradle/configpublish.gradle'

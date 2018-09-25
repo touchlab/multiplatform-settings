@@ -14,26 +14,6 @@
  * limitations under the License.
  */
 
-
-/*
-konanArtifacts {
-    library('multiplatform-settings-ios') {
-        enableMultiplatform true
-        artifactName 'MultiplatformSettingsIos'
-    }
-
-    program('multiplatform-settings-ios-test', targets: ['macos']) {
-        enableMultiplatform true
-        srcDir 'src/test/kotlin'
-        commonSourceSet 'test'
-        libraries {
-            artifact 'multiplatform-settings-ios'
-        }
-        extraOpts '-tr'
-    }
-}
-*/
-
 apply plugin: 'kotlin-platform-native'
 
 sourceSets {
@@ -52,5 +32,7 @@ sourceSets {
 }
 
 dependencies {
-    expectedBy project(':multiplatform-settings:common')
+    expectedBy project(':common')
 }
+
+apply from: '../../gradle/configpublish.gradle'

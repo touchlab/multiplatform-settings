@@ -15,17 +15,19 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.2.60'
+    ext.kotlin_version = kotlin_version
     repositories {
         google()
         jcenter()
         maven { url "https://dl.bintray.com/jetbrains/kotlin-native-dependencies" }
+        maven { url "https://dl.bintray.com/kotlin/kotlin-eap/" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-native-gradle-plugin:$konanVersion"
         classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.2-SNAPSHOT"
+        classpath 'digital.wup:android-maven-publish:3.6.2'
     }
 }
 
@@ -33,79 +35,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-    }
-}
-
-
-def checkFileExists(String urlString)
-{
-    java.net.URL url = new java.net.URL(urlString);
-    java.net.HttpURLConnection connection = (java.net.HttpURLConnection)url.openConnection();
-    connection.setRequestMethod("GET");
-    connection.connect();
-
-    int code = connection.getResponseCode();
-    return code <= 299;
-}
-
-subprojects {
-    apply plugin: 'maven-publish'
-    apply plugin: 'com.jfrog.bintray'
-
-    version '0.1-alpha5'
-    group 'com.russhwolf'
-
-    def ourRepo = "kotlin"
-    def ourOrg = "touchlabpublic"
-
-    publishing {
-        repositories {
-            maven {
-                url (project.hasProperty('j2objcMavenDeploy') ? project.property('j2objcMavenDeploy') : 'file://nope/')
-            }
-        }
-    }
-
-    bintray {
-        user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : ''
-        key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : ''
-        publish = true
-        override = true
-
-        pkg {
-            repo = ourRepo
-            userOrg = ourOrg
-            name = 'multiplatform-settings'
-            licenses = ['Apache-2.0']
-            vcsUrl = 'https://github.com/russhwolf/multiplatform-settings.git'
-            version {
-                name = project.version
-                desc = 'Initial bintray release'
-                released = new Date()
-            }
-
-        }
-    }
-
-    bintrayUpload.doFirst {
-        publications = []
-
-        def pubs = project.extensions.getByName("publishing").getPublications()
-
-        for(pub in pubs)
-        {
-            String pubUrl = "https://dl.bintray.com/${ourOrg}/${ourRepo}/" + pub.groupId.replace(".", "/") +"/"+ pub.artifactId +"/"+ pub.version +"/"+ pub.artifactId +"-"+ pub.version +".pom"
-            if(pub.artifactId.contains("library-test")){
-                continue
-            }
-            if(checkFileExists(pubUrl)){
-                logger.warn("Publication exists "+ pubUrl)
-            }
-            else{
-                logger.warn("Publication added "+ pubUrl)
-                publications += pub.name
-            }
-        }
+        maven { url "https://dl.bintray.com/kotlin/kotlin-eap/" }
     }
 }
 
